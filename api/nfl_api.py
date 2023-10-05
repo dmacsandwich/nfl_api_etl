@@ -1,9 +1,13 @@
 import requests
 from custom_logging.custom_logger import CustomLogger as logger
 
+
 class NflApi:
     def __init__(self) -> None:
         self.log = logger('NflApi').get_logger()
+        
+    def add_url_endpoints(self, url) -> str:
+        pass
         
     def get_data_from_url(self, url: str) -> dict:
         """Gets data from specified URL and returns in form of dict
