@@ -7,7 +7,7 @@ class AthleteIds(NflApi):
         super().__init__()
         
     def get_data(self, year:int, id:int) ->list[dict]:
-        return super().get_data_from_url(self.url.format(team_id=id, year=year))
+        return super().get_data_from_url(self.url.format(team_id=id, years=year))
     
     def get_athlete_by_id_and_year(self, years: list, team_ids: list):
         data = []
@@ -15,6 +15,6 @@ class AthleteIds(NflApi):
         #TODO add dict comprehension for data
         for year in years:
             for id in team_ids:
-                data.append(self.get_athlete_by_id_and_year(id,year))
+                data.append(self.get_data(year, id))
                 
         return data
