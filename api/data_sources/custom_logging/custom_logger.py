@@ -1,6 +1,6 @@
 import logging
 class CustomLogger:
-    def __init__(self, logger_name, level=logging.INFO):
+    def __init__(self, logger_name, level=logging.ERROR):
         self.logger = logging.getLogger(logger_name)
         self.logger.setLevel(level)
         handler = logging.StreamHandler()

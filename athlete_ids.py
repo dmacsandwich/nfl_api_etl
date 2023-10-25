@@ -1,12 +1,23 @@
 from api.data_sources.athlete_ids_by_year import AthleteIds
+from football_team_id import team_ids_df
 import pandas as pd
 import polars as pl
 
-year_range = [2019,2020,2021,2022]
-team_ids_range = [0, 1, 2]
-athlete_data =  AthleteIds().get_athlete_by_id_and_year(years=year_range, team_ids=team_ids_range)
+team_ids = pd.read_parquet("/Users/JinsooWhang/Desktop/개인적인/Data Eng/projects/nfl_api_etl/etl/data/raw/team_ids.parquet")
+team_ids = list(team_ids.team_id)
 
-print(athlete_data)
+
+year_range = [2019,2020,2021,2022]
+athlete_data =  AthleteIds().get_athlete_by_id_and_year(years=year_range, team_ids=team_ids)
+
+# Open the file in write mode ('w')
+with open('myfile.json', 'w') as f:
+# Write some text to the file
+    f.write(str(athlete_data))
+
+# print(athlete_data[28]['athletes'][0]['items'])
+# The structure is athlete_data[team_id]['athletes'][position]['items']
+# How do I extract these data without hitting the API multiple times because of the loop in line 6, line 11
 
 """
 def get_athlete_ids(data: list[dict])-> list[tuple]:
