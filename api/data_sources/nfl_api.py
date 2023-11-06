@@ -16,6 +16,7 @@ class NflApi:
         Returns:
             dict: Returns dict of the data from URL.
         """
+        print(url)
         self.log.info(f'Sending request to {url}')
         response = requests.get(url)
         try:
