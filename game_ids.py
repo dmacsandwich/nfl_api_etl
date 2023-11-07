@@ -12,8 +12,8 @@ def get_game_ids(data: list[dict])-> list[tuple]:
         for events in range(len(num_events)):
             num_competitions = data[year]['events'][events]['competitions']
             for competitions in range(len(num_competitions)):
-                game_ids.append(
-                    (
+                yield (
+                    
                         data[year]['events'][events]['id'],
                         data[year]['events'][events]['name'],
                         data[year]['events'][events]['date'],
@@ -37,10 +37,8 @@ def get_game_ids(data: list[dict])-> list[tuple]:
                         data[year]['events'][events]['competitions'][competitions]['competitors'][0]['score'],
                         data[year]['events'][events]['competitions'][competitions]['competitors'][1]['id'],
                         data[year]['events'][events]['competitions'][competitions]['competitors'][1]['score']
-                    )
+                    
                 )
-
-    return game_ids
     
 #TODO seperate api call, transformation & load into separate files, 
 import pandas as pd
