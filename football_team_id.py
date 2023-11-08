@@ -3,7 +3,7 @@ from api.data_sources.team_ids import TeamIds
 team_ids_data = TeamIds().get_data()
 
 def get_team_ids(data: list[dict]) ->list:
-    num_of_teams=len(data['sports'][0]['leagues'][0]['teams'])
+    num_of_teams=len(data['sports'][0]['leagues'][0]['teams']):
     
     return [[data['sports'][0]['leagues'][0]['teams'][i]['team']['id'] 
              ,data['sports'][0]['leagues'][0]['teams'][i]['team']['displayName']]
