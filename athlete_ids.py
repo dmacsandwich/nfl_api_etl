@@ -1,15 +1,18 @@
 from api.data_sources.athlete_ids_by_year import AthleteIds
+from prefect import flow, task
 import pandas as pd
 
 team_ids = pd.read_parquet("etl/data/raw/team_ids.parquet")
 team_ids = list(team_ids.team_id)
 year_range = [2019,2020,2021,2022]
 
-athlete_data =  AthleteIds().get_athlete_by_id_and_year(years=year_range, team_ids=team_ids)
-athlete_ids = []
+@task(retries=1,retry_delay_seconds=10)
+def get_athlete_ids_from_url()->dict:
+    athlete_data =  AthleteIds().get_athlete_by_id_and_year(years=year_range, team_ids=team_ids)
+    return athlete_data
 
+@task
 def get_athlete_ids(data: list[dict])-> list[tuple]:
-    
     for team_id in team_ids:
         for position in [0, 1, 2]:
             num_athletes = len(data[int(team_id)]['athletes'][position]['items'])
@@ -22,10 +25,18 @@ def get_athlete_ids(data: list[dict])-> list[tuple]:
                         data[int(team_id)]['athletes'][position]['items'][i]['dateOfBirth']
                 )
 
-athlete_ids_data = get_athlete_ids(athlete_data)
-athlete_ids_df = pd.DataFrame(athlete_ids_data, columns=['id', 'fullName', 'weight', 'height', 'dateOfBirth'])
+@task
+def load_ids_to_parquet(athlete_ids: list)->None:
+    athlete_ids_df = pd.DataFrame(athlete_ids, columns=['id', 'fullName', 'weight', 'height', 'dateOfBirth'])
+    # Specify the path to save the Parquet file
+    parquet_file_path = "etl/data/raw/athlete_ids.parquet"
+    athlete_ids_df.to_parquet(parquet_file_path)
 
-# Specify the path to save the Parquet file
-parquet_file_path = "etl/data/raw/athlete_ids.parquet"
+@flow
+def athlete_id_etl()->None:
+    athlete_ids_data = get_athlete_ids_from_url()
+    athlete_ids = get_athlete_ids(data=athlete_ids_data)
+    load_ids_to_parquet(athlete_ids)
 
-athlete_ids_df.to_parquet(parquet_file_path)
+if __name__ == "__main__":
+    athlete_id_etl.serve(name="Athlete ID Flow")
