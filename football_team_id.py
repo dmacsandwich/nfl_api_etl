@@ -13,8 +13,9 @@ def get_team_ids(data: list[dict]) ->list:
     num_of_teams=len(data['sports'][0]['leagues'][0]['teams'])
     
     for i in range(num_of_teams):
-        data['sports'][0]['leagues'][0]['teams'][i]['team']['id'],\
+        yield (data['sports'][0]['leagues'][0]['teams'][i]['team']['id'],\
               data['sports'][0]['leagues'][0]['teams'][i]['team']['displayName']
+        )
 
 #TODO separate logic into etl format. Below should be
 @task 
